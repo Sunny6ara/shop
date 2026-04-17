@@ -423,26 +423,71 @@
 
 
 
+// const express = require("express");
+// const cors = require("cors");
+
+// const app = express();
+// app.use(cors());
+// app.use(express.json());
+
+// // Dummy user (database ki jagah)
+// const user = {
+//   username: "admin",
+//   password: "1234",
+// };
+
+// app.post("/login", (req, res) => {
+//   const { username, password } = req.body;
+
+//   if (
+//     username === user.username &&
+//     password === user.password
+//   ) {
+//     res.json({ success: true, message: "Login Successful" });
+//   } else {
+//     res.json({ success: false, message: "Invalid Credentials" });
+//   }
+// });
+
+// app.listen(5000, () => {
+//   console.log("Server running on port 5000");
+// });
+
+
+
+
+
+
+
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Dummy user (database ki jagah)
-const user = {
-  username: "admin",
-  password: "1234",
-};
+// 🔥 MongoDB Connect
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("✅ MongoDB Connected"))
+.catch(err => console.log("❌ MongoDB Error:", err));
 
-app.post("/login", (req, res) => {
+// 🔥 Schema
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String
+});
+
+const User = mongoose.model("User", userSchema);
+
+// 🔥 Login API
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  if (
-    username === user.username &&
-    password === user.password
-  ) {
+  const user = await User.findOne({ username, password });
+
+  if (user) {
     res.json({ success: true, message: "Login Successful" });
   } else {
     res.json({ success: false, message: "Invalid Credentials" });

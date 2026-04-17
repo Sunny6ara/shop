@@ -6,7 +6,7 @@ function Login() {
   const [message, setMessage] = useState("");
 
   const handleLogin = async () => {
-    const res = await fetch("http://localhost:5000/login", {
+  const res = await fetch("https://store-backend.onrender.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
